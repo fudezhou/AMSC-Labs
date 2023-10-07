@@ -8,6 +8,9 @@ T pow_recursive(const T& base, unsigned int exp) {
   // first argument is a reference to a const T as you don't need to modify it
   if (exp == 0) 
     return 1; // if exp == 0, return 1
+    // this is the base case of the recursion
+    // meaning that when exp == 0, the recursion stops
+    // and it multiplies all the base values that have been stored in the stack!
   else if (exp % 2) 
     // if the exponent is odd, it is checking if the remainder of the division by 2 is 1,
     // same as if exp % 2 == true (true = 1); you can also se if (exp & 1)
