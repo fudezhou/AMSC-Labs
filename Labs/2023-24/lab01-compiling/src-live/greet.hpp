@@ -1,3 +1,5 @@
+// preprocessor directives are executed before the compilation process
+// and they start with a # symbol
 #ifndef HH_GREET_HH
 #define HH_GREET_HH
 

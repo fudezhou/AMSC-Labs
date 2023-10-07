@@ -3,14 +3,31 @@
 #include <vector>
 #include <iomanip>
 
-template</*fill here*/>
-/*fill here*/ pow_recursive(/*fill here*/) {
-  /*fill here*/
+template<typename T>
+T pow_recursive(const T& base, unsigned int exp) { 
+  // first argument is a reference to a const T as you don't need to modify it
+  if (exp == 0) 
+    return 1; // if exp == 0, return 1
+  else if (exp % 2) 
+    // if the exponent is odd, it is checking if the remainder of the division by 2 is 1,
+    // same as if exp % 2 == true (true = 1); you can also se if (exp & 1)
+    return base*pow_recursive(std::pow(base, 2), (exp - 1) / 2);
+  else
+    return pow_recursive(std::pow(base, 2), exp / 2);
 }
 
-template</*fill here*/>
-/*fill here*/ pow_iterative(/*fill here*/) {
-  /*fill here*/
+template<typename T>
+T pow_iterative(T base, unsigned int exp) {
+  // in this versione the first argument is not a reference to a const T 
+  // as you need to modify it
+  T res = 1;
+  while (exp > 0) {
+    if (exp % 2) // if exp is odd
+      res *= base;
+    base *= base;
+    exp /= 2; // exp = exp / 2
+  }
+  return res;
 }
 
 double rel_error(double a, double b) {
