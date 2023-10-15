@@ -33,7 +33,7 @@ struct Counter {
     Counter() { ++count; }
     Counter(const Counter&) { ++count; }
     ~Counter() { --count; }
-    static size_t howMany() { return count; }
+    static size_t howMany() { return count; } // why you are using static here? recover!
     static size_t count;
 };
 

@@ -15,8 +15,10 @@ public:
     // max iterations 
     // residual tolerance, by default 2 machine epsilon
     // step tolerance, by default 2 machine epsilon
+    const std::function<double(double)>& fx,
+    const std::function<double(double)>& dfx
   )
-    :
+    : _fx(fx), _dfx(dfx) {}
   /*initialize members*/ {
   }
 
@@ -31,6 +33,7 @@ public:
 // ** compute derivative at current x_iter
 // ** apply newton step
 // ** if step is smaller than tolerance break
+  void solve();
 
 // ================================================
 // define here the public "getters" for
@@ -52,6 +55,10 @@ public:
 // * the last evaluation of the derivative of f
 // * the current residual
 // * the current number of iterations
+private:
+  std::function<double(double)> _fx;
+  std::function<double(double)> _dfx;
+
 };
 
 #endif /* NEWTON_H */
