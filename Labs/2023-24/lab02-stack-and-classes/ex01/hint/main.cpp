@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string> // this is actually needed?
 
+/*
 class Shape {
 public:
     // constructor that initializes the name
@@ -76,3 +77,61 @@ int main() {
 
     return 0;
 }
+*/
+
+class Shape {
+
+    public:
+
+    Shape(const std::string& name) : _name(name) {}
+    const std::string& getName() const {
+        return _name;
+    }; 
+    virtual double getArea() const = 0;
+    virtual ~Shape() = default;
+
+    private:
+    std::string _name;
+};
+
+class Circle: public Shape {
+
+    public:
+
+    Circle(double radius) : Shape("Circle"), _radius(radius) {}
+    virtual double getArea() const override {
+        return _radius * _radius * std::numbers::pi_v<double>;
+    };
+    virtual ~Circle() = default; 
+
+    private: 
+    double _radius;
+
+};
+
+class Rectangle: public Shape {
+
+    public: 
+    Rectangle(double base, double height) : Shape("Rectangle"), _base(base), _height(height) {}
+    virtual double getArea() const override {
+        return _base * _height;
+    };
+    virtual ~Rectangle() = default;
+
+    private:
+    double _base, _height; 
+};
+
+
+int main() {
+
+    std::vector<std::shared_ptr<Shape>> shapes; 
+
+    shapes.push_back(std::make_shared<Circle>(6.9));
+    shapes.push_back(std::make_shared<Rectangle>(10., 2.));
+
+    for (const auto& shape : shapes) {
+        std::cout << "Shape: " << shape -> getName() << " - Area: " << shape -> getArea() << std::endl;
+    }
+}
+
