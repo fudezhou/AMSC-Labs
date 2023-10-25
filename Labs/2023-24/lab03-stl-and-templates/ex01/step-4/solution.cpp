@@ -13,9 +13,6 @@
 #include <functional>
 #include <array>
 
-using elem_t = double;
-using Vector = std::vector<elem_t>;
-
 template<typename T>
 class SparseMatrix {
 public:
@@ -59,7 +56,7 @@ public:
     return res;
   }
 
-  virtual double& operator()(size_t i, size_t j) override {
+  virtual T& operator()(size_t i, size_t j) override {
     if (m_data.size() < i + 1) {
       m_data.resize(i + 1);
       SparseMatrix<T>::m_nrows = i + 1;
@@ -72,7 +69,7 @@ public:
     }
     return (*it).second;
   }
-  virtual const double& operator()(size_t i, size_t j) const override {
+  virtual const T& operator()(size_t i, size_t j) const override {
     return m_data[i].at(j);
   }
   virtual ~MapMatrix() override = default;
@@ -137,10 +134,10 @@ public:
     }
     return res;
   }
-  virtual double& operator()(size_t i, size_t j) override {
+  virtual T& operator()(size_t i, size_t j) override {
     return std::get<2>(m_data[find_elem(i, j) - m_data.begin()]);
   }
-  virtual const double& operator()(size_t i, size_t j) const override {
+  virtual const T& operator()(size_t i, size_t j) const override {
     return std::get<2>(*find_elem(i, j));
   }
 
@@ -159,11 +156,20 @@ private:
   // utility to find element among the data
   // if we keep the Vector sorted we can find the element in O(log nnz) with std::lower_bound
   // instead of O(nnz) when using std::find_if
-  std::vector<ijv_t>::const_iterator find_elem(size_t i, size_t j) const {
+  typename std::vector<ijv_t>::const_iterator find_elem(size_t i, size_t j) const {
+    // We employ std::lower_bound to search in a sorted range.
+    // Returns an iterator pointing to the first element in the range [begin, end) 
+    // such that element < std::make_pair(i, j) is false, or end if no such element is found.
+    // Since we are comparing a tuple of size three and a std::pair,
+    // we must implement a custom comparison operator that defines 
+    // `<` in the expression `element < std::make_pair(i, j)`
     const auto it = std::lower_bound(
       m_data.begin(),
       m_data.end(),
-      std::make_tuple(i, j, std::numeric_limits<T>::lowest())
+      std::make_pair(i, j), // the value we are looking for
+      [](const ijv_t& x, const auto& value) { // the `<` operator
+        return (std::get<0>(x) < value.first) || ((std::get<0>(x) == value.first) && (std::get<1>(x) < value.second));
+      }
     );
     if( (it == m_data.cend()) || (std::get<0>(*it) != i) || (std::get<1>(*it) != j) ) {
       std::cerr << "Error: accessing an element of a COO matrix that is not present" << std::endl;
@@ -211,7 +217,7 @@ int main() {
 
   CooMatrix<elem_t> coo_mtx = mtx.to_coo();
 
-  Vector b;
+  SparseMatrix<elem_t>::Vector b;
   {
     using namespace std::chrono;
     const auto t0 = high_resolution_clock::now();

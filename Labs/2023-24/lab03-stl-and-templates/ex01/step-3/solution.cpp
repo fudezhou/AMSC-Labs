@@ -13,9 +13,6 @@
 #include <functional>
 #include <array>
 
-using elem_t = double;
-using Vector = std::vector<elem_t>;
-
 template<typename T>
 class SparseMatrix {
 public:
@@ -56,7 +53,7 @@ public:
     return res;
   }
 
-  virtual double& operator()(size_t i, size_t j) override {
+  virtual T& operator()(size_t i, size_t j) override {
     if (m_data.size() < i + 1) {
       m_data.resize(i + 1);
       SparseMatrix<T>::m_nrows = i + 1;
@@ -69,7 +66,7 @@ public:
     }
     return (*it).second;
   }
-  virtual const double& operator()(size_t i, size_t j) const override {
+  virtual const T& operator()(size_t i, size_t j) const override {
     return m_data[i].at(j);
   }
   virtual ~MapMatrix() override = default;
@@ -112,15 +109,6 @@ bool eq(const std::vector<T>& lhs, const std::vector<T>& rhs) {
   return true;
 }
 
-// time a function execution time
-auto timeit(const std::function<void()>& f) {
-  using namespace std::chrono;
-  const auto t0 = high_resolution_clock::now();
-  f();
-  const auto t1 = high_resolution_clock::now();
-  return duration_cast<milliseconds>(t1 - t0).count();
-}
-
 // utility for printing the result of a test
 void print_test_result(bool r, const std::string& test_name) {
   std::cout << test_name << " test: " << (r ? "PASSED" : "FAILED") << std::endl;
@@ -146,7 +134,7 @@ int main() {
     std::cout << "Elapsed for element access: " << dt_insert << "[ms]" << std::endl;
   }
 
-  Vector b;
+  SparseMatrix<elem_t>::Vector b;
   {
     using namespace std::chrono;
     const auto t0 = high_resolution_clock::now();
