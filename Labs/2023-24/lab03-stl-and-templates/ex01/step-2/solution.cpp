@@ -71,7 +71,7 @@ public:
   }
   virtual ~MapMatrix() override = default;
 protected:
-  virtual void _print(std::ostream& os) const {
+  virtual void _print(std::ostream& os) const override{
     for (size_t i = 0; i < m_data.size(); ++i) {
       for (const auto& [j, v] : m_data[i])
         os << i << "," << j << "," << v << std::endl;

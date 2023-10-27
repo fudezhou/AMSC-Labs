@@ -8,9 +8,12 @@ int main() {
     NewtonParams params; // declare a NewtonParams object for the parameters
     params.fx = f;
     params.dfx = df;
-    params.max_iter = 100;
-    params.tol_res = std::numeric_limits<double>::epsilon();
-    params.tol_dx = std::numeric_limits<double>::epsilon();
+
+    // You can also initialize the parameters like the following:
+    // params.max_iter = 100;
+    // params.tol_res = std::numeric_limits<double>::epsilon();
+    // params.tol_dx = std::numeric_limits<double>::epsilon();
+
     // params.x_n = std::vector<double>(0); // defining an empty vector
     // params.df_dx = 0.0;
     // params.dx = 0.0;

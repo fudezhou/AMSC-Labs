@@ -4,7 +4,7 @@
 // Definition of the constructor of the base class Shape;
 // it takes a string as parameter and initializes the private member _name with it.
 // Shape::Shape mean that you are calling, withing the class Shape, the constructor of the class Shape
-Shape::Shape(const std::string& name) : _name(name) {}
+Shape::Shape(const std::string& name) : _name(name) {};
 
 
 // Definition of the getName() for the name of the shape;

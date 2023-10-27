@@ -19,9 +19,9 @@ class SparseMatrix {
 public:
   using Vector = std::vector<T>;
   SparseMatrix() : m_nnz(0), m_nrows(0), m_ncols(0) {};
-  size_t nrows() const { return m_nrows; }
-  size_t ncols() const { return m_ncols; }
-  size_t nnz() const { return m_nnz; }
+  size_t nrows() const { return m_nrows; };
+  size_t ncols() const { return m_ncols; };
+  size_t nnz() const { return m_nnz; };
 
   void print(std::ostream& os = std::cout) const {
     os << "nrows: " << m_nrows << " | ncols:" << m_ncols << " | nnz: " << m_nnz << std::endl;

@@ -83,7 +83,7 @@ class Shape {
 
     public:
 
-    Shape(const std::string& name) : _name(name) {}
+    Shape(const std::string& name) : _name(name) {};
     const std::string& getName() const {
         return _name;
     }; 

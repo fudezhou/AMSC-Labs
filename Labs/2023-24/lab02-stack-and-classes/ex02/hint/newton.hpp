@@ -17,11 +17,11 @@ class NewtonSolver {
       // derivative of f
       const std::function<double(double)>& dfx,
       // max iterations 
-      const unsigned int max_iter = 100,
+      const unsigned int max_iter = 100, // initializing the default value, if you don't pass it, it will be 100
       // residual tolerance, by default 2 machine epsilon
-      const double tol_res = std::numeric_limits<double>::epsilon(),
+      const double tol_res = std::numeric_limits<double>::epsilon(), // initializing the default value, if you don't pass it, it will be 100
       // step tolerance, by default 2 machine epsilon
-      const double tol_dx = std::numeric_limits<double>::epsilon()
+      const double tol_dx = std::numeric_limits<double>::epsilon() // initializing the default value, if you don't pass it, it will be 100
     )
       : 
     // initialize members
@@ -34,7 +34,7 @@ class NewtonSolver {
       _df_dx(0),
       _dx(0),
       _res(0),
-      _iter(0) {}
+      _iter(0) {};
 
 // ================================================
 // implement here the public method "solve" that recives as input x_0

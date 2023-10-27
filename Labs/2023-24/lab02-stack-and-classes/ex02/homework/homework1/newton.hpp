@@ -10,9 +10,9 @@
 struct NewtonParams {
   std::function<double(double)> fx;
   std::function<double(double)> dfx;
-  unsigned int max_iter;
-  double tol_res;
-  double tol_dx;
+  unsigned int max_iter = 100;
+  double tol_res = std::numeric_limits<double>::epsilon();
+  double tol_dx = std::numeric_limits<double>::epsilon();
   std::vector<double> x_n;
   double df_dx;
   double dx;
