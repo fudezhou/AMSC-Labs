@@ -7,7 +7,7 @@
 #include <limits>
 #include <vector>
 
-class NewtonSolver {
+class NewtonSolver { 
 public:
   NewtonSolver(
     const std::function<double(double)>& fun_,

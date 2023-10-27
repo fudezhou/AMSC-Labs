@@ -1,6 +1,6 @@
 #include "newton.hpp"
 
-int main() {
+int main() { 
   NewtonSolver solver([](auto x) { return x * x - 2.0; }, [](auto x) { return 2.0 * x; });
   solver.solve(1.0);
 
