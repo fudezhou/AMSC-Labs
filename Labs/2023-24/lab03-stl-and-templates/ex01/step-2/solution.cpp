@@ -90,6 +90,6 @@ int main() {
   m.print(std::cout);
   const auto x = m.vmult({{2, 3}});
   std::cout << "m @ [2, 3]" << std::endl;
-  std::cout << x[0] << " " << x[1] << std::endl;i
+  std::cout << x[0] << " " << x[1] << std::endl;
   return 0;
 }
