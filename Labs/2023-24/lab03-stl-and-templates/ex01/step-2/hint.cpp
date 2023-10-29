@@ -117,7 +117,7 @@ class MapMatrix : public SparseMatrix<T> {
       // print the data
       for (size_t i = 0; i < _data.size(); ++i) {
         for (const auto& [j, v] : _data[i]) { // for each key-value pair in the map
-          os << "["<< i << "," << j << "]" << " = " << v << std::endl; // in this way you are sure that the order is the same as the one in the map
+          os << "["<< i << ", " << j << "]" << " = " << v << std::endl; // in this way you are sure that the order is the same as the one in the map
         }
       }
     };
@@ -131,10 +131,21 @@ int main() {
   m(0, 0) = 1;
   m(1, 1) = 2;
 
+  std::cout << "Matrix m:" << std::endl;
   m.print(std::cout);
 
   const auto x = m.vmult({{2, 3}}); // see this syntax
-  std::cout << x[0] << " " << x[1] << std::endl;
+
+  //std::cout << x[0] << " " << x[1] << std::endl;
+  std::cout << "m @ [2; 3]" << std::endl;
+
+  // for (size_t i = 0; i < x.size(); ++i) { // this is the old way
+  //   std::cout << x[i] << std::endl;
+  // }
+
+  for (const auto& p : x) { // this is fancier
+    std::cout << p << std::endl;
+  }
   
   return 0;
 }

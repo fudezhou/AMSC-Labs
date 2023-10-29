@@ -95,7 +95,7 @@ class MapMatrix : public SparseMatrix<T> {
     virtual void _print(std::ostream& os) const override {
       for (size_t i = 0; i < _data.size(); ++i) {
         for (const auto& [j, v] : _data[i]) {
-          os << "["<< i << "," << j << "]" << " = " << v << std::endl;
+          os << "["<< i << "; " << j << "]" << " = " << v << std::endl;
         }
       }
     };
@@ -104,7 +104,22 @@ class MapMatrix : public SparseMatrix<T> {
 };
 
 int main() {
-  // Implement a proper main to check if the class works as expected
+  // Implement a proper main to check if the class works as expected!
+
+  MapMatrix<double> m;
+
+  m(0, 0) = 1.0;
+  m(1, 1) = 2.0;
+
+  m.print(std::cout);
+
+  const auto v = m.vmult({1.0, 1.0});
+
+  for (const auto& p : v) {
+    std::cout << p << std::endl;
+  }
+
+  return 0;
 }
 ```
 
