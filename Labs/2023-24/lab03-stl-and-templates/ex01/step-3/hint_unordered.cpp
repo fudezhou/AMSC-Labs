@@ -45,74 +45,63 @@ class SparseMatrix {
 
 template<typename T>
 class MapMatrix : public SparseMatrix<T> {
-
-  public:
-
-    using Vector = typename SparseMatrix<T>::Vector; 
+public:
+    using Vector = typename SparseMatrix<T>::Vector;
+    
+    // ... Other members and functions ...
 
     virtual Vector vmult(const Vector& x) const override {
-      assert(x.size() == SparseMatrix<T>::_ncols); 
-      Vector res(SparseMatrix<T>::_nrows);
-      for (size_t i = 0; i < _data.size(); ++i) {
-        for (const auto& [j, v] : _data[i]) { 
-          res[i] += x[j] * v;
+        assert(x.size() == SparseMatrix<T>::_ncols);
+        Vector res(SparseMatrix<T>::_nrows);
+        for (size_t i = 0; i < _data.size(); ++i) {
+            for (const auto& [j, v] : _data[i]) {
+                res[i] += x[j] * v;
+            }
         }
-      }
-      return res;
+        return res;
     };
 
     virtual T& operator()(size_t i, size_t j) override {
-
-      if (_data.size() < i + 1) {
-        _data.resize(i + 1);
-        SparseMatrix<T>::_nrows = i + 1;
-      }
-
-      const auto it = _data[i].find(j);
-
-      if (it == _data[i].end()) {
-        SparseMatrix<T>::_nnz++;
-        SparseMatrix<T>::_ncols = std::max(SparseMatrix<T>::_ncols, j + 1);
-        return (*_data[i].emplace(j, 0).first).second;
-      } else {
-        return (*it).second;
-      }
+        if (_data.size() < i + 1) {
+            _data.resize(i + 1);
+            SparseMatrix<T>::_nrows = i + 1;
+        }
+        
+        const auto it = _data[i].find(j);
+        if (it == _data[i].end()) {
+            SparseMatrix<T>::_nnz++;
+            SparseMatrix<T>::_ncols = std::max(SparseMatrix<T>::_ncols, j + 1);
+            return (*_data[i].emplace(j, 0).first).second;
+        } else {
+            return (*it).second;
+        }
     };
 
     virtual const T& operator()(size_t i, size_t j) const override {
-      return _data.at(i).at(j);
+        return _data.at(i).at(j);
     };
 
     virtual ~MapMatrix() override = default;
 
-  protected:
+protected:
 
     virtual void _print(std::ostream& os) const override {
-      for (size_t i = 0; i < _data.size(); ++i) {
-        for (const auto& [j, v] : _data[i]) {
-          os << "["<< i << "; " << j << "]" << " = " << v << std::endl;
+        for (size_t i = 0; i < _data.size(); ++i) {
+            for (const auto& [j, v] : _data[i]) {
+                os << "[" << i << "; " << j << "]" << " = " << v << std::endl;
+            }
         }
-      }
     };
 
-    std::vector<std::map<size_t, T>> _data; 
+    std::vector<std::unordered_map<size_t, T>> _data; // Replaced std::map with std::unordered_map
 };
 
-/*
-    Now the goal is the write some code that allows you to check the correctness of your implementation.
-*/
-
-// try to write an alternative way to fill the matrix
-template<typename T> // template for the matrix type
-void fill_matrix(SparseMatrix<T>& m, size_t N) { // m is passed by reference as you want to modify it
-  // note that you are actually using polymorphism here, as the function is called with a SparseMatrix<T> object
+template<typename T>
+void fill_matrix(SparseMatrix<T>& m, size_t N) { 
   m(0, 0) = -2;
   m(0, 1) = 1;  
   m(N - 1, N - 2) = 1;
   m(N - 1, N - 1) = -2;  
-
-  // filling the first and last row if for avoiding to check if i == 0 or i == N - 1 in the loop
-  // this is a trick to avoid if statements in loops
 
   for (size_t i = 1; i < N - 1; ++i) {
     m(i, i) = -2;
@@ -123,14 +112,14 @@ void fill_matrix(SparseMatrix<T>& m, size_t N) { // m is passed by reference as 
 }
 
 template<typename T>
-bool check_eq(const std::vector<T>& lhs, const std::vector<T>& rhs) { // checks if the expected result is the same as the actual result
+bool check_eq(const std::vector<T>& lhs, const std::vector<T>& rhs) {
 
-  if (lhs.size() != rhs.size()) { // check if lhs and rhs have the same size
+  if (lhs.size() != rhs.size()) { 
     return false;
   }
 
   for (size_t i = 0; i < lhs.size(); ++i) {
-    if (lhs[i] != rhs[i]) { // this is not suitable for floating point types --> use std::abs(lhs[i] - rhs[i]) < std::limits<T>::epsilon()
+    if (lhs[i] != rhs[i]) { 
       return false;
     }
   }
@@ -138,14 +127,8 @@ bool check_eq(const std::vector<T>& lhs, const std::vector<T>& rhs) { // checks 
   return true;
 }
 
-// nota that there is no need to use templates here, as you are using a specific types
 void print_test_result(bool test, const std::string& test_name) {
   std::cout << test_name << " test: \t" << (test ? "PASSED" : "FAILED") << std::endl;
-//   if (test) {
-//     std::cout << "Test " << test_name << " passed" << std::endl;
-//   } else {
-//     std::cout << "Test " << test_name << " failed" << std::endl;
-//   }
 }
 
 int main() {

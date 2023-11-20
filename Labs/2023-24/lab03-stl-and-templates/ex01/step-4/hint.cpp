@@ -43,6 +43,10 @@ class SparseMatrix {
     size_t _nnz, _nrows, _ncols;
 };
 
+// You need to declare CooMatrix before MapMatrix because of the friend declaration 
+template<typename T>
+class CooMatrix;
+
 template<typename T>
 class MapMatrix : public SparseMatrix<T> {
 
@@ -85,6 +89,7 @@ class MapMatrix : public SparseMatrix<T> {
 
     virtual ~MapMatrix() override = default;
 
+  // You need to change _print to protected in order to use it in CooMatrix!
   protected:
 
     virtual void _print(std::ostream& os) const override {
@@ -95,24 +100,17 @@ class MapMatrix : public SparseMatrix<T> {
       }
     };
 
+  private:
+
     std::vector<std::map<size_t, T>> _data; 
 };
 
-/*
-    Now the goal is the write some code that allows you to check the correctness of your implementation.
-*/
-
-// try to write an alternative way to fill the matrix
-template<typename T> // template for the matrix type
-void fill_matrix(SparseMatrix<T>& m, size_t N) { // m is passed by reference as you want to modify it
-  // note that you are actually using polymorphism here, as the function is called with a SparseMatrix<T> object
+template<typename T> 
+void fill_matrix(SparseMatrix<T>& m, size_t N) { 
   m(0, 0) = -2;
   m(0, 1) = 1;  
   m(N - 1, N - 2) = 1;
   m(N - 1, N - 1) = -2;  
-
-  // filling the first and last row if for avoiding to check if i == 0 or i == N - 1 in the loop
-  // this is a trick to avoid if statements in loops
 
   for (size_t i = 1; i < N - 1; ++i) {
     m(i, i) = -2;
@@ -123,14 +121,14 @@ void fill_matrix(SparseMatrix<T>& m, size_t N) { // m is passed by reference as 
 }
 
 template<typename T>
-bool check_eq(const std::vector<T>& lhs, const std::vector<T>& rhs) { // checks if the expected result is the same as the actual result
+bool check_eq(const std::vector<T>& lhs, const std::vector<T>& rhs) {
 
-  if (lhs.size() != rhs.size()) { // check if lhs and rhs have the same size
+  if (lhs.size() != rhs.size()) { 
     return false;
   }
 
   for (size_t i = 0; i < lhs.size(); ++i) {
-    if (lhs[i] != rhs[i]) { // this is not suitable for floating point types --> use std::abs(lhs[i] - rhs[i]) < std::limits<T>::epsilon()
+    if (lhs[i] != rhs[i]) { 
       return false;
     }
   }
@@ -138,20 +136,28 @@ bool check_eq(const std::vector<T>& lhs, const std::vector<T>& rhs) { // checks 
   return true;
 }
 
-// nota that there is no need to use templates here, as you are using a specific types
 void print_test_result(bool test, const std::string& test_name) {
   std::cout << test_name << " test: \t" << (test ? "PASSED" : "FAILED") << std::endl;
-//   if (test) {
-//     std::cout << "Test " << test_name << " passed" << std::endl;
-//   } else {
-//     std::cout << "Test " << test_name << " failed" << std::endl;
-//   }
 }
+
+template<typename T>
+class CooMatrix : public SparseMatrix<T> {
+
+    // You need to declare MapMatrix as a friend class in order to use its private members
+    // i.e. you want CooMatrix to be able to access MapMatrix
+    friend class MapMatrix<T>;
+
+    public:
+
+    private:
+
+    
+};
 
 int main() {
 
-  constexpr size_t N = 10000; // size of the matrix  
-  using elem_t = double; // type of the matrix elements
+  constexpr size_t N = 10000; 
+  using elem_t = double; 
 
   MapMatrix<elem_t> mtx;
   MapMatrix<elem_t>::Vector x(N), y_ex(N), y(N); 

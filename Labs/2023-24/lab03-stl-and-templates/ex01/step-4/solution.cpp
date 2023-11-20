@@ -38,7 +38,8 @@ protected:
   size_t m_nrows, m_ncols;
 };
 
-template<typename T>
+// you need to declare CooMatrix before MapMatrix because of the friend declaration
+template<typename T> 
 class CooMatrix;
 
 template<typename T>
@@ -74,9 +75,9 @@ public:
   }
   virtual ~MapMatrix() override = default;
 
-  CooMatrix<T> to_coo() const;
+  CooMatrix<T> to_coo() const; 
 protected:
-  virtual void _print(std::ostream& os) const {
+  virtual void _print(std::ostream& os) const override {
     for (size_t i = 0; i < m_data.size(); ++i) {
       for (const auto& [j, v] : m_data[i])
         os << i << "," << j << "," << v << std::endl;
@@ -148,7 +149,7 @@ private:
     SparseMatrix<T>::m_ncols = ncols;
   }
 
-  virtual void _print(std::ostream& os) const {
+  virtual void _print(std::ostream& os) const override {
     for (const auto& ijv : m_data)
       os << std::get<0>(ijv) << "," << std::get<1>(ijv) << "," << std::get<2>(ijv) << std::endl;
   }
